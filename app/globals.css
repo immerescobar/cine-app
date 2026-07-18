@@ -216,6 +216,13 @@ select {
 /* ============================================
    TABLAS
    ============================================ */
+/* Contenedor con scroll horizontal: en pantallas angostas la tabla
+   se desliza dentro de su caja en vez de desbordar toda la pagina. */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -379,4 +386,39 @@ tbody tr:hover {
 .stat-card .label {
   color: var(--color-text-muted);
   font-size: 0.8rem;
+}
+
+/* ============================================
+   RESPONSIVE (pantallas pequeñas)
+   Ajustes puntuales para moviles: reducimos paddings,
+   permitimos que la barra de navegacion se deslice si no
+   cabe, y que los botones de accion salten de linea.
+   ============================================ */
+@media (max-width: 640px) {
+  .container {
+    padding: var(--spacing-4) var(--spacing-3);
+  }
+
+  .app-header {
+    padding: var(--spacing-4);
+  }
+
+  .card {
+    padding: var(--spacing-4);
+  }
+
+  /* Si los tabs no caben, se pueden desplazar horizontalmente
+     sin romper el layout ni cortar botones. */
+  .nav-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .nav-tabs button {
+    white-space: nowrap;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+  }
 }

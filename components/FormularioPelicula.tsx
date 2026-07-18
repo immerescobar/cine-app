@@ -5,7 +5,6 @@ import type { Pelicula, GeneroPelicula, ClasificacionPelicula } from "@/types/pe
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { agregarPelicula, actualizarPelicula, selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas } from "@/redux/slices/salasSlice";
-import { Span } from "next/dist/trace";
 
 interface FormularioPeliculaProps {
     peliculaExistente: Pelicula | null;
@@ -17,7 +16,7 @@ const GENEROS: GeneroPelicula[] = [
     "Comedia",
     "Drama",
     "Terror",
-    "Ciencia ficcion",
+    "Ciencia Ficcion",
     "Animacion",
     "Romance",
     "Suspenso",

@@ -67,6 +67,7 @@ export default function TablaSalas() {
       {salas.length === 0 ? (
         <p className="empty-state">No hay salas registradas todavia.</p>
       ) : (
+        <div className="table-wrap">
         <table>
           <thead>
             <tr>
@@ -100,6 +101,7 @@ export default function TablaSalas() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

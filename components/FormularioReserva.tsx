@@ -62,16 +62,27 @@ export default function FormularioReserva() {
     function handleConfirmar() {
         setError("");
 
-        if (!peliculaCodigo) {
-            setError("Selecciona una pelicula.");
-            return;
-        }
-        if (!funcionId) {
-            setError("Selecciona una funcion.");
-            return;
-        }
+        // El boton "Confirmar" solo se renderiza cuando ya hay una funcion
+        // seleccionada (mas abajo), por lo que peliculaCodigo y funcionId
+        // siempre existen aqui: no hace falta revalidarlos (B5).
         if (asientosSeleccionado.length === 0) {
             setError("Selecciona al menos un asiento.");
+            return;
+        }
+
+        // Verificacion de disponibilidad antes de reservar (B2): si algun
+        // asiento elegido ya fue ocupado por otra reserva, no se completa la
+        // operacion ni se registra la venta. Es coherente con la guarda
+        // atomica del reducer reservarAsientos.
+        const hayOcupados = asientosSeleccionado.some((id) => {
+            const asiento = funcionSeleccionada?.asientos.find((a) => a.id === id);
+            return !asiento || asiento.estado !== "Disponible";
+        });
+        if (hayOcupados) {
+            setError(
+                "No se pudo completar la reserva: uno o mas asientos ya fueron reservados. Actualiza tu seleccion."
+            );
+            setAsientosSeleccionados([]);
             return;
         }
 
@@ -137,6 +148,12 @@ export default function FormularioReserva() {
                     </div>
                 )}
             </div>
+
+            {peliculaCodigo && funcionesDeLaPelicula.length === 0 && (
+                <p className="empty-state">
+                    No hay funciones disponibles para esta película
+                </p>
+            )}
 
             {funcionSeleccionada && (
                 <MapaAsientos
