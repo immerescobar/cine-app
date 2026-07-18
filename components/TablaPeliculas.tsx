@@ -6,6 +6,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas } from "@/redux/slices/salasSlice";
 import PeliculaFila from "./PeliculaFila";
+import PeliculaCard from "./PeliculaCard";
 import FormularioPelicula from "./FormularioPelicula";
 import Buscador from "./Buscador";
 import Filtros from "./Filtros";
@@ -16,6 +17,7 @@ export default function TablaPelicula() {
 
   const [peliculaEnEdicion, setPeliculaEnEdicion] = useState<Pelicula | null>(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
   // --- Estado de busqueda y filtros ---
   // Todo esto es estado LOCAL (useState), no Redux: solo le importa
@@ -57,6 +59,14 @@ export default function TablaPelicula() {
     .filter((p) => (filtroSala === "" ? true : p.salaId === filtroSala))
     .filter((p) => (filtroEstado === "" ? true : p.estado === filtroEstado));
 
+    const filtrosActivos = [
+      busqueda.trim() !== "",
+      filtroGenero !== "",
+      filtroClasificacion !== "",
+      filtroSala !== "",
+      filtroEstado !== "",
+    ].filter(Boolean).length;
+
   function handleEditar(pelicula: Pelicula) {
     setPeliculaEnEdicion(pelicula);
     setMostrarFormulario(true);
@@ -78,6 +88,7 @@ export default function TablaPelicula() {
     setFiltroClasificacion("");
     setFiltroSala("");
     setFiltroEstado("");
+    setMostrarFiltros(false);
   }
 
   return (
@@ -97,19 +108,37 @@ export default function TablaPelicula() {
       )}
 
       {/* --- Barra de busqueda y filtros --- */}
-      <div className="form-grid" style={{ marginTop: "var(--spacing-4)" }}>
-        <Buscador valor={busqueda} onCambiar={setBusqueda} />
-        <Filtros
-          genero={filtroGenero}
-          onGenero={setFiltroGenero}
-          clasificacion={filtroClasificacion}
-          onClasificacion={setFiltroClasificacion}
-          sala={filtroSala}
-          onSala={setFiltroSala}
-          estado={filtroEstado}
-          onEstado={setFiltroEstado}
-          salas={salas}
-        />
+      <div style={{ marginTop: "var(--spacing-4)" }}>
+        <div className="search-row">
+          <Buscador valor={busqueda} onCambiar={setBusqueda} />
+        </div>
+
+        <button
+          type="button"
+          className="filters-toggle"
+          onClick={() => setMostrarFiltros((prev) => !prev)}
+        >
+          <span>
+            Filtros {filtrosActivos > 0 && <span className="filters-count">{filtrosActivos}</span>}
+          </span>
+          <span className={`filters-chevron ${mostrarFiltros ? "open" : ""}`}>▾</span>
+        </button>
+
+        {mostrarFiltros && (
+          <div className="filters-grid">
+            <Filtros
+              genero={filtroGenero}
+              onGenero={setFiltroGenero}
+              clasificacion={filtroClasificacion}
+              onClasificacion={setFiltroClasificacion}
+              sala={filtroSala}
+              onSala={setFiltroSala}
+              estado={filtroEstado}
+              onEstado={setFiltroEstado}
+              salas={salas}
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex" style={{ justifyContent: "space-between", alignItems: "center", margin: "var(--spacing-3) 0" }}>
@@ -128,32 +157,46 @@ export default function TablaPelicula() {
             : "Ninguna pelicula coincide con la busqueda/filtros."}
         </p>
       ) : (
-        <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Codigo</th>
-              <th>Nombre</th>
-              <th>Genero</th>
-              <th>Duracion</th>
-              <th>Clasif.</th>
-              <th>Sala</th>
-              <th>Precio</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Vista de tarjetas: visible en movil, oculta en tablet+ (ver CSS) */}
+          <div className="pelicula-cards">
             {peliculasFiltradas.map((pelicula) => (
-              <PeliculaFila
+              <PeliculaCard
                 key={pelicula.codigo}
                 pelicula={pelicula}
                 onEditar={handleEditar}
               />
             ))}
-          </tbody>
-        </table>
-        </div>
+          </div>
+
+          {/* Vista de tabla: oculta en movil, visible en tablet+ (ver CSS) */}
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Nombre</th>
+                  <th>Genero</th>
+                  <th>Duracion</th>
+                  <th>Clasif.</th>
+                  <th>Sala</th>
+                  <th>Precio</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {peliculasFiltradas.map((pelicula) => (
+                  <PeliculaFila
+                    key={pelicula.codigo}
+                    pelicula={pelicula}
+                    onEditar={handleEditar}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

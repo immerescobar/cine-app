@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas, selectFunciones, agregarFuncion, eliminarFuncion } from "@/redux/slices/salasSlice";
+import FuncionCard from "./FuncionCard";
 
 export default function FormularioFuncion() {
   const dispatch = useAppDispatch();
@@ -137,42 +138,56 @@ export default function FormularioFuncion() {
       {funciones.length === 0 ? (
         <p className="empty-state">No hay funciones programadas todavia.</p>
       ) : (
-        <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Pelicula</th>
-              <th>Sala</th>
-              <th>Horario</th>
-              <th>Asientos</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {funciones.map((f) => {
-              const pelicula = peliculas.find((p) => p.codigo === f.peliculaCodigo);
-              const sala = salas.find((s) => s.id === f.salaId);
-              const disponibles = f.asientos.filter((a) => a.estado === "Disponible").length;
+        <>
+          <div className="funcion-cards">
+            {funciones.map((f) => (
+              <FuncionCard
+                key={f.id}
+                funcion={f}
+                pelicula={peliculas.find((p) => p.codigo === f.peliculaCodigo)}
+                sala={salas.find((s) => s.id === f.salaId)}
+                onEliminar={handleEliminar}
+              />
+            ))}
+          </div>
 
-              return (
-                <tr key={f.id}>
-                  <td>{pelicula?.nombre ?? "Pelicula eliminada"}</td>
-                  <td>{sala?.nombre ?? "Sala eliminada"}</td>
-                  <td>{f.horario.replace("T", " ")}</td>
-                  <td>
-                    {disponibles} / {f.asientos.length} disponibles
-                  </td>
-                  <td>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(f.id)}>
-                      Eliminar
-                    </button>
-                  </td>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Pelicula</th>
+                  <th>Sala</th>
+                  <th>Horario</th>
+                  <th>Asientos</th>
+                  <th>Acciones</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        </div>
+              </thead>
+              <tbody>
+                {funciones.map((f) => {
+                  const pelicula = peliculas.find((p) => p.codigo === f.peliculaCodigo);
+                  const sala = salas.find((s) => s.id === f.salaId);
+                  const disponibles = f.asientos.filter((a) => a.estado === "Disponible").length;
+
+                  return (
+                    <tr key={f.id}>
+                      <td>{pelicula?.nombre ?? "Pelicula eliminada"}</td>
+                      <td>{sala?.nombre ?? "Sala eliminada"}</td>
+                      <td>{f.horario.replace("T", " ")}</td>
+                      <td>
+                        {disponibles} / {f.asientos.length} disponibles
+                      </td>
+                      <td>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(f.id)}>
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

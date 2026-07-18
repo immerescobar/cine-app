@@ -7,6 +7,7 @@ import { selectSalas, eliminarSala } from "@/redux/slices/salasSlice";
 import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectFunciones } from "@/redux/slices/salasSlice";
 import FormularioSala from "./FormularioSala";
+import SalaCard from "./SalaCard";
 
 export default function TablaSalas() {
   const dispatch = useAppDispatch();
@@ -67,41 +68,54 @@ export default function TablaSalas() {
       {salas.length === 0 ? (
         <p className="empty-state">No hay salas registradas todavia.</p>
       ) : (
-        <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Codigo</th>
-              <th>Nombre</th>
-              <th>Filas</th>
-              <th>Columnas</th>
-              <th>Total Asientos</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          <div className="sala-cards">
             {salas.map((sala) => (
-              <tr key={sala.id}>
-                <td>{sala.id}</td>
-                <td>{sala.nombre}</td>
-                <td>{sala.filas}</td>
-                <td>{sala.columnas}</td>
-                <td>{sala.filas * sala.columnas}</td>
-                <td>
-                  <div className="table-actions">
-                    <button className="btn btn-secondary btn-sm" onClick={() => handleEditar(sala)}>
-                      Editar
-                    </button>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(sala)}>
-                      Eliminar
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              <SalaCard
+                key={sala.id}
+                sala={sala}
+                onEditar={handleEditar}
+                onEliminar={handleEliminar}
+              />
             ))}
-          </tbody>
-        </table>
-        </div>
+          </div>
+
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Nombre</th>
+                  <th>Filas</th>
+                  <th>Columnas</th>
+                  <th>Total Asientos</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {salas.map((sala) => (
+                  <tr key={sala.id}>
+                    <td>{sala.id}</td>
+                    <td>{sala.nombre}</td>
+                    <td>{sala.filas}</td>
+                    <td>{sala.columnas}</td>
+                    <td>{sala.filas * sala.columnas}</td>
+                    <td>
+                      <div className="table-actions">
+                        <button className="btn btn-secondary btn-sm" onClick={() => handleEditar(sala)}>
+                          Editar
+                        </button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(sala)}>
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

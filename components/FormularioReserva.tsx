@@ -244,8 +244,8 @@ export default function FormularioReserva() {
             )}
 
             {funcionSeleccionada && (
-                <div className="flex" style={{ justifyContent: "space-between", alignItems: "center" }}>
-                <p>
+                <div className="reserva-resumen">
+                <p className="reserva-resumen-texto">
                     Boletos: <strong>{cantidadBoletos}</strong> &nbsp;|&nbsp;
                     Asientos elegidos: <strong>{asientosSeleccionado.length}</strong> &nbsp;|&nbsp;
                     Total: <strong>${total.toFixed(2)}</strong>

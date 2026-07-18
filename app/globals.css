@@ -1,18 +1,17 @@
 /* ============================================
    VARIABLES GLOBALES (Design Tokens)
-   Definimos aqui los colores y medidas que usaremos
-   en toda la app, asi evitamos numeros repetidos
-   en cada componente.
    ============================================ */
 :root {
   --color-bg: #0f1117;
   --color-bg-soft: #171a23;
   --color-surface: #1e222d;
+  --color-surface-hover: #252a38;
   --color-border: #2b303c;
   --color-text: #e8e9ed;
   --color-text-muted: #9aa0ac;
 
   --color-primary: #e63946;
+  --color-primary-soft: #ff5a67;
   --color-success: #2ecc71;
   --color-warning: #f4a825;
   --color-danger: #e63946;
@@ -20,6 +19,7 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
+  --radius-xl: 20px;
 
   --spacing-1: 4px;
   --spacing-2: 8px;
@@ -27,6 +27,16 @@
   --spacing-4: 16px;
   --spacing-6: 24px;
   --spacing-8: 32px;
+  --spacing-10: 40px;
+
+  --font-size-sm: clamp(0.8rem, 0.78rem + 0.2vw, 0.875rem);
+  --font-size-base: clamp(0.9rem, 0.88rem + 0.2vw, 1rem);
+  --font-size-lg: clamp(1rem, 0.95rem + 0.4vw, 1.15rem);
+  --font-size-xl: clamp(1.15rem, 1.05rem + 0.6vw, 1.4rem);
+  --font-size-2xl: clamp(1.3rem, 1.1rem + 1vw, 1.8rem);
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* ============================================
@@ -40,13 +50,17 @@ html,
 body {
   padding: 0;
   margin: 0;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  line-height: 1.5;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 button {
@@ -60,29 +74,51 @@ select {
 }
 
 /* ============================================
-   LAYOUT GENERAL
+   LAYOUT GENERAL (mobile first)
    ============================================ */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-3);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: var(--spacing-6) var(--spacing-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: var(--spacing-8) var(--spacing-4);
+  }
 }
 
 .app-header {
   background: var(--color-bg-soft);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .app-header {
+    padding: var(--spacing-4) var(--spacing-6);
+  }
 }
 
 .app-header h1 {
-  font-size: 1.25rem;
+  font-size: var(--font-size-xl);
   margin: 0 0 var(--spacing-3) 0;
 }
 
 .nav-tabs {
   display: flex;
   gap: var(--spacing-2);
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  /* Oculta la barra de scroll fea en navegadores que la soportan,
+     sin quitar la funcionalidad de deslizar. */
+  scrollbar-width: thin;
 }
 
 .nav-tabs button {
@@ -91,7 +127,8 @@ select {
   color: var(--color-text-muted);
   padding: var(--spacing-2) var(--spacing-4);
   border-radius: var(--radius-md);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -107,19 +144,26 @@ select {
 }
 
 /* ============================================
-   TARJETAS
+   TARJETAS (mobile first)
    ============================================ */
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-6);
+  padding: var(--spacing-4);
   margin-bottom: var(--spacing-6);
+  box-shadow: var(--shadow-card);
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: var(--spacing-6);
+  }
 }
 
 .card h2 {
   margin-top: 0;
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
 }
 
 /* ============================================
@@ -127,9 +171,78 @@ select {
    ============================================ */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-4);
+}
+
+/* Cuadricula especifica para los filtros de busqueda: a diferencia de
+   .form-grid (que se usa en formularios con inputs largos), esta se
+   mantiene en 2 columnas incluso en pantallas chicas, porque los
+   selects de filtro son angostos y caben bien de a pares. */
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+}
+
+@media (min-width: 640px) {
+  .filters-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--spacing-4);
+  }
+}
+
+.search-row {
+  margin-bottom: var(--spacing-3);
+}
+
+.filters-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-3);
+}
+
+.filters-toggle:hover {
+  border-color: var(--color-primary);
+}
+
+.filters-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: var(--spacing-2);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.filters-chevron {
+  transition: transform 0.2s ease;
+  color: var(--color-text-muted);
+}
+
+.filters-chevron.open {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 640px) {
+  .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 }
 
 .form-field {
@@ -139,7 +252,7 @@ select {
 }
 
 .form-field label {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
 
@@ -150,7 +263,7 @@ select {
   color: var(--color-text);
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: var(--radius-sm);
-  font-size: 0.95rem;
+  font-size: var(--font-size-base);
 }
 
 .form-field input:focus,
@@ -166,11 +279,12 @@ select {
 
 .field-error {
   color: var(--color-danger);
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
 }
 
 .form-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-3);
   margin-top: var(--spacing-4);
 }
@@ -182,13 +296,17 @@ select {
   border: none;
   border-radius: var(--radius-sm);
   padding: var(--spacing-2) var(--spacing-4);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
 .btn:hover {
   opacity: 0.85;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -210,14 +328,12 @@ select {
 
 .btn-sm {
   padding: var(--spacing-1) var(--spacing-2);
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
 }
 
 /* ============================================
    TABLAS
    ============================================ */
-/* Contenedor con scroll horizontal: en pantallas angostas la tabla
-   se desliza dentro de su caja en vez de desbordar toda la pagina. */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -226,6 +342,7 @@ select {
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 560px;
 }
 
 th,
@@ -233,13 +350,13 @@ td {
   text-align: left;
   padding: var(--spacing-3);
   border-bottom: 1px solid var(--color-border);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
 }
 
 th {
   color: var(--color-text-muted);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -250,11 +367,253 @@ tbody tr:hover {
 
 .table-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-2);
 }
 
 /* ============================================
-   BADGES (Estados)
+   VISTA DE TARJETAS (alternativa a la tabla en movil)
+   ============================================ */
+
+/* Por defecto (mobile first), mostramos tarjetas y ocultamos la tabla. */
+.pelicula-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.table-wrap {
+  display: none;
+}
+
+/* A partir de 768px (tablet+), invertimos: se muestra la tabla,
+   se ocultan las tarjetas. La info es la misma, solo cambia el formato. */
+@media (min-width: 768px) {
+  .pelicula-cards {
+    display: none;
+  }
+
+  .table-wrap {
+    display: block;
+  }
+}
+
+.pelicula-card {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.pelicula-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+}
+
+.pelicula-card-titulo {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin: 0 0 2px 0;
+}
+
+.pelicula-card-codigo {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.pelicula-card-datos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2) var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.pelicula-card-dato .label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: block;
+}
+
+.pelicula-card-acciones {
+  display: flex;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.pelicula-card-acciones .btn {
+  flex: 1;
+}
+
+/* ============================================
+   VISTA DE TARJETAS - SALAS
+   ============================================ */
+.sala-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+@media (min-width: 768px) {
+  .sala-cards {
+    display: none;
+  }
+}
+
+.sala-card {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.sala-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-3);
+}
+
+.sala-card-titulo {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin: 0 0 2px 0;
+}
+
+.sala-card-codigo {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.sala-card-datos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.sala-card-datos .label {
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: block;
+}
+
+.sala-card-datos .valor {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.sala-card-acciones {
+  display: flex;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.sala-card-acciones .btn {
+  flex: 1;
+}
+
+/* ============================================
+   VISTA DE TARJETAS - FUNCIONES
+   ============================================ */
+.funcion-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+@media (min-width: 768px) {
+  .funcion-cards {
+    display: none;
+  }
+}
+
+.funcion-card {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.funcion-card-titulo {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-1) 0;
+}
+
+.funcion-card-detalle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 var(--spacing-1) 0;
+}
+
+.funcion-card-disponibilidad {
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--spacing-3) 0;
+}
+
+.funcion-card-acciones {
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.funcion-card-acciones .btn {
+  width: 100%;
+}
+
+/* ============================================
+   RESUMEN DE RESERVA (mobile first)
+   ============================================ */
+.reserva-resumen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  align-items: stretch;
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.reserva-resumen-texto {
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.reserva-resumen .btn {
+  width: 100%;
+}
+
+/* A partir de tablet, vuelve a ser una fila horizontal: texto a la
+   izquierda, boton a la derecha, sin ocupar todo el ancho. */
+@media (min-width: 640px) {
+  .reserva-resumen {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .reserva-resumen-texto {
+    text-align: left;
+  }
+
+  .reserva-resumen .btn {
+    width: auto;
+  }
+}
+
+/* ============================================
+   BADGES
    ============================================ */
 .badge {
   display: inline-block;
@@ -275,7 +634,7 @@ tbody tr:hover {
 }
 
 /* ============================================
-   MAPA DE ASIENTOS
+   MAPA DE ASIENTOS (mobile first)
    ============================================ */
 .seat-map {
   display: flex;
@@ -283,24 +642,41 @@ tbody tr:hover {
   align-items: center;
   gap: var(--spacing-2);
   margin: var(--spacing-4) auto;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .seat-row {
   display: flex;
-  gap: var(--spacing-2);
+  gap: var(--spacing-1);
+}
+
+@media (min-width: 640px) {
+  .seat-row {
+    gap: var(--spacing-2);
+  }
 }
 
 .seat {
-  width: 36px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-bg-soft);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .seat {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-sm);
+  }
 }
 
 .seat.available {
@@ -329,12 +705,46 @@ tbody tr:hover {
   text-align: center;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
   color: var(--color-text-muted);
-  font-size: 0.75rem;
+  font-size: var(--font-size-sm);
   letter-spacing: 0.2em;
   padding: var(--spacing-2);
   margin: 0 auto var(--spacing-4) auto;
   border-radius: var(--radius-sm);
   max-width: 500px;
+  width: 100%;
+}
+
+/* ============================================
+   DASHBOARD
+   ============================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-4);
+  }
+}
+
+.stat-card {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+}
+
+.stat-card .value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+}
+
+.stat-card .label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 /* ============================================
@@ -359,66 +769,5 @@ tbody tr:hover {
 .empty-state {
   text-align: center;
   color: var(--color-text-muted);
-  padding: var(--spacing-8);
-}
-
-/* ============================================
-   DASHBOARD (lo usaremos mas adelante)
-   ============================================ */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--spacing-4);
-}
-
-.stat-card {
-  background: var(--color-bg-soft);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-4);
-}
-
-.stat-card .value {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.stat-card .label {
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-}
-
-/* ============================================
-   RESPONSIVE (pantallas pequeñas)
-   Ajustes puntuales para moviles: reducimos paddings,
-   permitimos que la barra de navegacion se deslice si no
-   cabe, y que los botones de accion salten de linea.
-   ============================================ */
-@media (max-width: 640px) {
-  .container {
-    padding: var(--spacing-4) var(--spacing-3);
-  }
-
-  .app-header {
-    padding: var(--spacing-4);
-  }
-
-  .card {
-    padding: var(--spacing-4);
-  }
-
-  /* Si los tabs no caben, se pueden desplazar horizontalmente
-     sin romper el layout ni cortar botones. */
-  .nav-tabs {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .nav-tabs button {
-    white-space: nowrap;
-  }
-
-  .form-actions {
-    flex-wrap: wrap;
-  }
+  padding: var(--spacing-8) var(--spacing-4);
 }
