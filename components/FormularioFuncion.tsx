@@ -11,6 +11,11 @@ export default function FormularioFuncion() {
   const salas = useAppSelector(selectSalas);
   const funciones = useAppSelector(selectFunciones);
 
+  // Solo se pueden programar funciones para peliculas Disponibles (B3).
+  // La lista completa `peliculas` se sigue usando abajo para mostrar el
+  // nombre de las funciones historicas, aunque su pelicula ya no lo este.
+  const peliculasDisponibles = peliculas.filter((p) => p.estado === "Disponible");
+
   const [peliculaCodigo, setPeliculaCodigo] = useState("");
   function handleCambiarPelicula(codigo: string) {
         setPeliculaCodigo(codigo);
@@ -52,7 +57,21 @@ export default function FormularioFuncion() {
       return;
     }
 
-    dispatch(agregarFuncion({ peliculaCodigo, salaId, horario }));
+    // La pelicula debe seguir disponible al momento de crear la funcion (B3).
+    const pelicula = peliculas.find((p) => p.codigo === peliculaCodigo);
+    if (!pelicula || pelicula.estado !== "Disponible") {
+      setError("La pelicula seleccionada no esta disponible.");
+      return;
+    }
+
+    dispatch(
+      agregarFuncion({
+        peliculaCodigo,
+        salaId,
+        horario,
+        peliculaDisponible: pelicula.estado === "Disponible",
+      })
+    );
     setPeliculaCodigo("");
     setSalaId("");
     setHorario("");
@@ -75,7 +94,7 @@ export default function FormularioFuncion() {
             <label>Pelicula</label>
             <select value={peliculaCodigo} onChange={(e) => handleCambiarPelicula(e.target.value)}>
               <option value="">-- Selecciona --</option>
-              {peliculas.map((p) => (
+              {peliculasDisponibles.map((p) => (
                 <option key={p.codigo} value={p.codigo}>
                   {p.nombre}
                 </option>

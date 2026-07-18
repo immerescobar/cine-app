@@ -37,21 +37,28 @@ export default function Dashboard() {
   ).length;
   const asientosDisponibles = todosLosAsientos.length - asientosOcupados;
 
-  // Pelicula mas reservada: contamos cuantas reservas tiene cada
-  // codigo de pelicula, y nos quedamos con el que tenga mas.
+  // Pelicula mas reservada: sumamos la cantidad de BOLETOS reservados por
+  // cada codigo de pelicula (no el numero de registros de reserva), asi una
+  // reserva de 5 boletos pesa mas que dos reservas de 1 boleto (B4).
+  // Criterio de desempate determinista: a igualdad de boletos, gana el
+  // codigo menor en orden alfabetico (recorremos los codigos ordenados y
+  // usamos comparacion estricta, por lo que el primero se conserva).
   function calcularPeliculaMasReservada(): string {
     if (reservas.length === 0) return "N/A";
 
-    const conteos: Record<string, number> = {};
+    const boletosPorPelicula: Record<string, number> = {};
     for (const reserva of reservas) {
-      conteos[reserva.peliculaCodigo] = (conteos[reserva.peliculaCodigo] ?? 0) + 1;
+      boletosPorPelicula[reserva.peliculaCodigo] =
+        (boletosPorPelicula[reserva.peliculaCodigo] ?? 0) + reserva.cantidadBoletos;
     }
 
     let codigoGanador = "";
-    let maxReservas = 0;
-    for (const [codigo, cantidad] of Object.entries(conteos)) {
-      if (cantidad > maxReservas) {
-        maxReservas = cantidad;
+    let maxBoletos = -1;
+    for (const [codigo, boletos] of Object.entries(boletosPorPelicula).sort(
+      (a, b) => a[0].localeCompare(b[0])
+    )) {
+      if (boletos > maxBoletos) {
+        maxBoletos = boletos;
         codigoGanador = codigo;
       }
     }
