@@ -118,6 +118,7 @@ export default function FormularioFuncion() {
       {funciones.length === 0 ? (
         <p className="empty-state">No hay funciones programadas todavia.</p>
       ) : (
+        <div className="table-wrap">
         <table>
           <thead>
             <tr>
@@ -152,6 +153,7 @@ export default function FormularioFuncion() {
             })}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

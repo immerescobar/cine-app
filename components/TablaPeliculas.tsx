@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Pelicula, GeneroPelicula, ClasificacionPelicula } from "@/types/peliculas";
+import type { Pelicula, GeneroPelicula, ClasificacionPelicula, EstadoPelicula } from "@/types/peliculas";
 import { useAppSelector } from "@/redux/hooks";
 import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas } from "@/redux/slices/salasSlice";
@@ -23,7 +23,7 @@ export default function TablaPelicula() {
   const [filtroGenero, setFiltroGenero] = useState<GeneroPelicula | "">("");
   const [filtroClasificacion, setFiltroClasificacion] = useState<ClasificacionPelicula | "">("");
   const [filtroSala, setFiltroSala] = useState("");
-  const [soloDisponibles, setSoloDisponibles] = useState(false);
+  const [filtroEstado, setFiltroEstado] = useState<EstadoPelicula | "">("");
 
   // Encadenamos varios .filter() seguidos: cada uno reduce un poco mas
   // la lista, empezando desde todas las peliculas. Esto se recalcula
@@ -39,7 +39,7 @@ export default function TablaPelicula() {
       filtroClasificacion === "" ? true : p.clasificacion === filtroClasificacion
     )
     .filter((p) => (filtroSala === "" ? true : p.salaId === filtroSala))
-    .filter((p) => (soloDisponibles ? p.estado === "Disponible" : true));
+    .filter((p) => (filtroEstado === "" ? true : p.estado === filtroEstado));
 
   function handleEditar(pelicula: Pelicula) {
     setPeliculaEnEdicion(pelicula);
@@ -61,7 +61,7 @@ export default function TablaPelicula() {
     setFiltroGenero("");
     setFiltroClasificacion("");
     setFiltroSala("");
-    setSoloDisponibles(false);
+    setFiltroEstado("");
   }
 
   return (
@@ -133,15 +133,15 @@ export default function TablaPelicula() {
         </div>
 
         <div className="form-field">
-          <label>
-            <input
-              type="checkbox"
-              checked={soloDisponibles}
-              onChange={(e) => setSoloDisponibles(e.target.checked)}
-              style={{ marginRight: "6px" }}
-            />
-            Solo disponibles
-          </label>
+          <label>Estado</label>
+          <select
+            value={filtroEstado}
+            onChange={(e) => setFiltroEstado(e.target.value as EstadoPelicula | "")}
+          >
+            <option value="">Todos</option>
+            <option value="Disponible">Disponible</option>
+            <option value="No disponible">No disponible</option>
+          </select>
         </div>
       </div>
 
@@ -161,6 +161,7 @@ export default function TablaPelicula() {
             : "Ninguna pelicula coincide con la busqueda/filtros."}
         </p>
       ) : (
+        <div className="table-wrap">
         <table>
           <thead>
             <tr>
@@ -185,6 +186,7 @@ export default function TablaPelicula() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );
