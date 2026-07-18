@@ -93,13 +93,19 @@ cine-app/
 ├── components/
 │   ├── Dashboard.tsx           # Estadisticas generales
 │   ├── TablaPeliculas.tsx      # Listado, busqueda y filtros de peliculas
-│   ├── PeliculaFila.tsx        # Fila individual de la tabla de peliculas
+│   ├── PeliculaFila.tsx        # Fila de tabla (vista desktop)
+│   ├── PeliculaCard.tsx        # Tarjeta (vista movil)
+│   ├── Buscador.tsx            # Campo de busqueda en tiempo real
+│   ├── Filtros.tsx             # Filtros por genero, clasificacion, sala y estado
 │   ├── FormularioPelicula.tsx  # Crear/editar pelicula
 │   ├── TablaSalas.tsx          # Listado de salas
+│   ├── SalaCard.tsx            # Tarjeta de sala (vista movil)
 │   ├── FormularioSala.tsx      # Crear/editar sala
 │   ├── FormularioFuncion.tsx   # Programar funciones (pelicula + sala + horario)
+│   ├── FuncionCard.tsx         # Tarjeta de funcion (vista movil)
 │   ├── FormularioReserva.tsx   # Flujo de reserva de boletos
 │   └── MapaAsientos.tsx        # Matriz visual de asientos, interactiva
+│   
 ├── redux/
 │   ├── store.ts           # Configuracion del store global
 │   ├── hooks.ts            # useAppDispatch / useAppSelector tipados
@@ -113,6 +119,25 @@ cine-app/
 │   ├── funcion.ts      # Tipo: Funcion (pelicula + sala + horario)
 │   └── reserva.ts      # Tipo: Reserva
 └── package.json
+
+## 📱 Diseño responsivo
+
+La interfaz sigue un enfoque **mobile-first**: los estilos base en `globals.css` estan pensados para pantallas pequeñas, y se amplian progresivamente con `@media (min-width: ...)` a medida que hay mas espacio disponible (breakpoints principales en `640px`, `768px` y `1024px`).
+
+### Patron de tarjetas vs. tabla
+
+En las pantallas de Peliculas, Salas y Funciones, la misma informacion se muestra de dos formas segun el tamaño de pantalla:
+
+- **Movil** (`< 768px`): tarjetas apiladas verticalmente (`PeliculaCard`, `SalaCard`, `FuncionCard`), mas faciles de leer y tocar en una pantalla angosta.
+- **Tablet en adelante** (`>= 768px`): tabla tradicional, que aprovecha mejor el espacio horizontal disponible.
+
+Ambas vistas se renderizan en el DOM; el CSS decide cual mostrar segun el ancho de pantalla (`display: none` / `display: block`), sin necesidad de detectar el tamaño de ventana en JavaScript.
+
+### Otros ajustes responsivos
+
+- Tipografia fluida con `clamp()`: los tamaños de fuente escalan suavemente entre un minimo y un maximo segun el ancho de pantalla.
+- Filtros de busqueda colapsables en `TablaPeliculas`, para no ocupar espacio vertical innecesario en movil.
+- El mapa de asientos (`MapaAsientos`) reduce el tamaño de cada asiento en pantallas chicas y permite scroll horizontal contenido (sin desplazar la pagina completa) para salas anchas.
 
 ## 🎯 Modulos funcionales
 
