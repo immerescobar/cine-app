@@ -7,6 +7,8 @@ import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas } from "@/redux/slices/salasSlice";
 import PeliculaFila from "./PeliculaFila";
 import FormularioPelicula from "./FormularioPelicula";
+import Buscador from "./Buscador";
+import Filtros from "./Filtros";
 
 export default function TablaPelicula() {
   const peliculas = useAppSelector(selectPeliculas);
@@ -25,15 +27,29 @@ export default function TablaPelicula() {
   const [filtroSala, setFiltroSala] = useState("");
   const [filtroEstado, setFiltroEstado] = useState<EstadoPelicula | "">("");
 
+  // Termino de busqueda normalizado: sin espacios extremos y en minusculas,
+  // para que la busqueda ignore mayusculas/minusculas y espacios sobrantes.
+  const terminoBusqueda = busqueda.trim().toLowerCase();
+
   // Encadenamos varios .filter() seguidos: cada uno reduce un poco mas
   // la lista, empezando desde todas las peliculas. Esto se recalcula
   // en cada render, asi que siempre refleja el estado actual real.
   const peliculasFiltradas = peliculas
-    .filter((p) =>
-      busqueda.trim() === ""
-        ? true
-        : p.nombre.toLowerCase().includes(busqueda.trim().toLowerCase())
-    )
+    .filter((p) => {
+      // Busqueda dinamica por nombre, genero, clasificacion y sala.
+      if (terminoBusqueda === "") return true;
+      const sala = salas.find((s) => s.id === p.salaId);
+      const textoBuscable = [
+        p.nombre,
+        p.genero,
+        p.clasificacion,
+        sala?.nombre ?? "",
+        p.salaId,
+      ]
+        .join(" ")
+        .toLowerCase();
+      return textoBuscable.includes(terminoBusqueda);
+    })
     .filter((p) => (filtroGenero === "" ? true : p.genero === filtroGenero))
     .filter((p) =>
       filtroClasificacion === "" ? true : p.clasificacion === filtroClasificacion
@@ -82,67 +98,18 @@ export default function TablaPelicula() {
 
       {/* --- Barra de busqueda y filtros --- */}
       <div className="form-grid" style={{ marginTop: "var(--spacing-4)" }}>
-        <div className="form-field">
-          <label>Buscar por nombre</label>
-          <input
-            type="text"
-            placeholder="Ej: Fast & Furious"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-          />
-        </div>
-
-        <div className="form-field">
-          <label>Genero</label>
-          <select value={filtroGenero} onChange={(e) => setFiltroGenero(e.target.value as GeneroPelicula | "")}>
-            <option value="">Todos</option>
-            <option value="Accion">Accion</option>
-            <option value="Comedia">Comedia</option>
-            <option value="Drama">Drama</option>
-            <option value="Terror">Terror</option>
-            <option value="Ciencia Ficcion">Ciencia Ficcion</option>
-            <option value="Animacion">Animacion</option>
-            <option value="Romance">Romance</option>
-            <option value="Suspenso">Suspenso</option>
-          </select>
-        </div>
-
-        <div className="form-field">
-          <label>Clasificacion</label>
-          <select
-            value={filtroClasificacion}
-            onChange={(e) => setFiltroClasificacion(e.target.value as ClasificacionPelicula | "")}
-          >
-            <option value="">Todas</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-          </select>
-        </div>
-
-        <div className="form-field">
-          <label>Sala</label>
-          <select value={filtroSala} onChange={(e) => setFiltroSala(e.target.value)}>
-            <option value="">Todas</option>
-            {salas.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="form-field">
-          <label>Estado</label>
-          <select
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value as EstadoPelicula | "")}
-          >
-            <option value="">Todos</option>
-            <option value="Disponible">Disponible</option>
-            <option value="No disponible">No disponible</option>
-          </select>
-        </div>
+        <Buscador valor={busqueda} onCambiar={setBusqueda} />
+        <Filtros
+          genero={filtroGenero}
+          onGenero={setFiltroGenero}
+          clasificacion={filtroClasificacion}
+          onClasificacion={setFiltroClasificacion}
+          sala={filtroSala}
+          onSala={setFiltroSala}
+          estado={filtroEstado}
+          onEstado={setFiltroEstado}
+          salas={salas}
+        />
       </div>
 
       <div className="flex" style={{ justifyContent: "space-between", alignItems: "center", margin: "var(--spacing-3) 0" }}>
