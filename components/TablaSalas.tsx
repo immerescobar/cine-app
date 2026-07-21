@@ -54,8 +54,11 @@ export default function TablaSalas() {
 
   return (
     <div className="card">
-      <div className="flex" style={{ justifyContent: "space-between", alignItems: "center" }}>
-        <h2>Salas</h2>
+      <div className="section-header">
+        <div>
+          <h2>Salas</h2>
+          <p>Administra las salas del cine: filas, columnas y capacidad total de cada una.</p>
+        </div>
         <button className="btn btn-primary" onClick={handleNuevaSala}>
           + Nueva Sala
         </button>
@@ -99,7 +102,9 @@ export default function TablaSalas() {
                     <td>{sala.nombre}</td>
                     <td>{sala.filas}</td>
                     <td>{sala.columnas}</td>
-                    <td>{sala.filas * sala.columnas}</td>
+                    <td>
+                      <span className="badge badge-accent">{sala.filas * sala.columnas}</span>
+                    </td>
                     <td>
                       <div className="table-actions">
                         <button className="btn btn-secondary btn-sm" onClick={() => handleEditar(sala)}>

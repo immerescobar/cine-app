@@ -5,7 +5,14 @@ import { selectPeliculas } from "@/redux/slices/peliculaSlice";
 import { selectSalas, selectFunciones } from "@/redux/slices/salasSlice";
 import { selectReservas } from "@/redux/slices/reservasSlice";
 
-export default function Dashboard() {
+// Prop opcional: permite que el Dashboard cambie de pestaña usando el mismo
+// mecanismo de navegacion que ya vive en app/page.tsx (setModuloActivo). No
+// duplicamos estado de navegacion: solo reenviamos el nombre del modulo.
+interface DashboardProps {
+  onNavigate?: (modulo: "peliculas" | "funciones" | "reservas") => void;
+}
+
+export default function Dashboard({ onNavigate }: DashboardProps) {
   const peliculas = useAppSelector(selectPeliculas);
   const salas = useAppSelector(selectSalas);
   const funciones = useAppSelector(selectFunciones);
@@ -71,50 +78,107 @@ export default function Dashboard() {
 
   return (
     <div className="card">
-      <h2>Dashboard</h2>
+      <div className="dashboard-welcome">
+        <h2>Bienvenido de nuevo</h2>
+        <p>Este es el resumen general del cine: ocupacion, ventas y actividad de tus peliculas y funciones.</p>
+      </div>
+
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="value">{totalPeliculas}</div>
-          <div className="label">Peliculas</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">{salas.length}</div>
-          <div className="label">Salas</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">{totalFunciones}</div>
-          <div className="label">Funciones Programadas</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">{totalBoletosVendidos}</div>
-          <div className="label">Boletos Vendidos</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">{asientosDisponibles}</div>
-          <div className="label">Asientos Disponibles</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">{asientosOcupados}</div>
-          <div className="label">Asientos Ocupados</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value">${ingresosGenerados.toFixed(2)}</div>
-          <div className="label">Ingresos Generados</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="value" style={{ fontSize: "1.1rem" }}>
-            {peliculaMasReservada}
+          <span className="stat-card-icon" aria-hidden="true">🎞️</span>
+          <div className="stat-card-body">
+            <div className="value">{totalPeliculas}</div>
+            <div className="label">Peliculas</div>
           </div>
-          <div className="label">Pelicula Mas Reservada</div>
+        </div>
+
+        <div className="stat-card">
+          <span className="stat-card-icon" aria-hidden="true">🏛️</span>
+          <div className="stat-card-body">
+            <div className="value">{salas.length}</div>
+            <div className="label">Salas</div>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <span className="stat-card-icon" aria-hidden="true">🗓️</span>
+          <div className="stat-card-body">
+            <div className="value">{totalFunciones}</div>
+            <div className="label">Funciones Programadas</div>
+          </div>
+        </div>
+
+        <div className="stat-card highlight">
+          <span className="stat-card-icon" aria-hidden="true">🎟️</span>
+          <div className="stat-card-body">
+            <div className="value">{totalBoletosVendidos}</div>
+            <div className="label">Boletos Vendidos</div>
+          </div>
+        </div>
+
+        <div className="stat-card highlight">
+          <span className="stat-card-icon" aria-hidden="true">💺</span>
+          <div className="stat-card-body">
+            <div className="value">{asientosDisponibles}</div>
+            <div className="label">Asientos Disponibles</div>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <span className="stat-card-icon" aria-hidden="true">🚫</span>
+          <div className="stat-card-body">
+            <div className="value">{asientosOcupados}</div>
+            <div className="label">Asientos Ocupados</div>
+          </div>
+        </div>
+
+        <div className="stat-card highlight">
+          <span className="stat-card-icon" aria-hidden="true">💰</span>
+          <div className="stat-card-body">
+            <div className="value">${ingresosGenerados.toFixed(2)}</div>
+            <div className="label">Ingresos Generados</div>
+          </div>
+        </div>
+
+        <div className="stat-card highlight">
+          <span className="stat-card-icon" aria-hidden="true">🏆</span>
+          <div className="stat-card-body">
+            <div className="value" style={{ fontSize: "1.1rem" }}>
+              {peliculaMasReservada}
+            </div>
+            <div className="label">Pelicula Mas Reservada</div>
+          </div>
         </div>
       </div>
+
+      {onNavigate && (
+        <div className="dashboard-quick">
+          <h3>Accesos rapidos</h3>
+          <div className="quick-links">
+            <button type="button" className="quick-link" onClick={() => onNavigate("peliculas")}>
+              <span className="quick-link-icon" aria-hidden="true">🎞️</span>
+              <span>
+                <span className="quick-link-title">Peliculas</span>
+                <span className="quick-link-desc">Ver, agregar o editar el catalogo</span>
+              </span>
+            </button>
+            <button type="button" className="quick-link" onClick={() => onNavigate("funciones")}>
+              <span className="quick-link-icon" aria-hidden="true">🗓️</span>
+              <span>
+                <span className="quick-link-title">Funciones</span>
+                <span className="quick-link-desc">Programar nuevos horarios</span>
+              </span>
+            </button>
+            <button type="button" className="quick-link" onClick={() => onNavigate("reservas")}>
+              <span className="quick-link-icon" aria-hidden="true">🎟️</span>
+              <span>
+                <span className="quick-link-title">Reservar Boletos</span>
+                <span className="quick-link-desc">Iniciar una nueva venta</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

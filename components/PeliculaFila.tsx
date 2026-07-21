@@ -25,10 +25,16 @@ export default function PeliculaFila({ pelicula, onEditar }: PeliculaFilaProps) 
     <tr>
       <td>{pelicula.codigo}</td>
       <td>{pelicula.nombre}</td>
-      <td>{pelicula.genero}</td>
+      <td>
+        <span className="badge badge-neutral">{pelicula.genero}</span>
+      </td>
       <td>{pelicula.duracionMinutos} min</td>
-      <td>{pelicula.clasificacion}</td>
-      <td>{pelicula.salaId}</td>
+      <td>
+        <span className="badge badge-accent">{pelicula.clasificacion}</span>
+      </td>
+      <td>
+        <span className="badge badge-neutral">{pelicula.salaId}</span>
+      </td>
       <td>${pelicula.precio.toFixed(2)}</td>
       <td>
         <span

@@ -63,10 +63,16 @@ export default function MapaAsientos({
                     </div>
                 ))}
             </div>
-            <div className="flex gap-4 text-muted" style={{ fontSize: "0.8rem", justifyContent: "center"}}>
-                <span>🟩 Disponible</span>
-                <span>🟥 Seleccionado</span>
-                <span>⬛ Ocupado</span>
+            <div className="seat-legend">
+                <span className="seat-legend-item">
+                    <span className="seat-legend-swatch available" /> Disponible
+                </span>
+                <span className="seat-legend-item">
+                    <span className="seat-legend-swatch selected" /> Seleccionado
+                </span>
+                <span className="seat-legend-item">
+                    <span className="seat-legend-swatch occupied" /> Ocupado
+                </span>
             </div>
         </div>
     );

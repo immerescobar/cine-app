@@ -13,6 +13,8 @@ interface FuncionCardProps {
 
 export default function FuncionCard({ funcion, pelicula, sala, onEliminar }: FuncionCardProps) {
   const disponibles = funcion.asientos.filter((a) => a.estado === "Disponible").length;
+  const total = funcion.asientos.length;
+  const porcentaje = total === 0 ? 0 : Math.round((disponibles / total) * 100);
 
   return (
     <div className="funcion-card">
@@ -20,9 +22,14 @@ export default function FuncionCard({ funcion, pelicula, sala, onEliminar }: Fun
       <p className="funcion-card-detalle">
         {sala?.nombre ?? "Sala eliminada"} · {funcion.horario.replace("T", " ")}
       </p>
-      <p className="funcion-card-disponibilidad">
-        <strong>{disponibles}</strong> / {funcion.asientos.length} asientos disponibles
-      </p>
+      <div className="disponibilidad">
+        <div className="disponibilidad-barra">
+          <div className="disponibilidad-relleno" style={{ width: `${porcentaje}%` }} />
+        </div>
+        <span className="disponibilidad-texto">
+          {disponibles} / {total} disponibles
+        </span>
+      </div>
       <div className="funcion-card-acciones">
         <button className="btn btn-danger btn-sm" onClick={() => onEliminar(funcion.id)}>
           Eliminar

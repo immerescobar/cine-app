@@ -106,6 +106,7 @@ export default function FormularioPelicula({
         <div className="card" style={{background: "var(--color-bg-soft)"}}>
             <h2>{esEdicion ? "Editar Pelicula" : "Nueva Pelicula"}</h2>
             <form onSubmit={handleSubmit}>
+                <div className="form-grid">
                 <div className={`form-field ${errores.codigo ? "has-error" : ""}`}>
                     <label>Codigo</label>
                     <input 
@@ -196,6 +197,7 @@ export default function FormularioPelicula({
                     <option value="Disponible">Disponible</option>
                     <option value="No disponible">No disponible</option>
                     </select>
+                </div>
                 </div>
 
                 <div className="form-actions">

@@ -49,6 +49,17 @@ export default function FormularioReserva() {
         ? peliculaSeleccionada.precio * cantidadBoletos
         : 0;
 
+    // Paso visual actual del flujo de reserva. Es puramente derivado del
+    // estado que ya existe (no agrega ni duplica estado ni logica de Redux),
+    // solo indica en que punto del proceso esta el usuario.
+    let pasoActual = 1;
+    if (funcionSeleccionada) pasoActual = 2;
+    if (funcionSeleccionada && asientosSeleccionado.length > 0) pasoActual = 3;
+    if (funcionSeleccionada && cantidadBoletos > 0 && asientosSeleccionado.length === cantidadBoletos) {
+        pasoActual = 4;
+    }
+    if (mensajeExito) pasoActual = 5;
+
     function handleCambiarPelicula(codigo: string) {
         // Al cambiar de pelicula se limpian sala, funcion y asientos.
         setPeliculaCodigo(codigo);
@@ -164,6 +175,28 @@ export default function FormularioReserva() {
     return (
         <div className="card">
             <h2>Reservar Boletos</h2>
+
+            <div className="steps">
+                {[
+                    { numero: 1, etiqueta: "Pelicula y funcion" },
+                    { numero: 2, etiqueta: "Cantidad" },
+                    { numero: 3, etiqueta: "Asientos" },
+                    { numero: 4, etiqueta: "Resumen" },
+                    { numero: 5, etiqueta: "Confirmar" },
+                ].map((paso) => (
+                    <div
+                        key={paso.numero}
+                        className={`step ${pasoActual === paso.numero ? "active" : ""} ${
+                            pasoActual > paso.numero ? "done" : ""
+                        }`}
+                    >
+                        <span className="step-circle">
+                            {pasoActual > paso.numero ? "✓" : paso.numero}
+                        </span>
+                        <span className="step-label">{paso.etiqueta}</span>
+                    </div>
+                ))}
+            </div>
 
             <div className="form-grid">
                 <div className="form-field">

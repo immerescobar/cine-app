@@ -86,8 +86,14 @@ export default function FormularioFuncion() {
   }
 
   return (
+    <>
     <div className="card">
-      <h2>Programar Funciones</h2>
+      <div className="section-header">
+        <div>
+          <h2>Programar Funciones</h2>
+          <p>Elige una pelicula disponible, la sala y el horario para crear una nueva funcion.</p>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit}>
         <div className="form-grid">
@@ -133,8 +139,15 @@ export default function FormularioFuncion() {
           </button>
         </div>
       </form>
+    </div>
 
-      <h2 style={{ marginTop: "var(--spacing-6)" }}>Funciones Programadas</h2>
+    <div className="card">
+      <div className="section-header">
+        <div>
+          <h2>Funciones Programadas</h2>
+          <p>Listado de todas las funciones activas y su disponibilidad de asientos.</p>
+        </div>
+      </div>
       {funciones.length === 0 ? (
         <p className="empty-state">No hay funciones programadas todavia.</p>
       ) : (
@@ -167,6 +180,8 @@ export default function FormularioFuncion() {
                   const pelicula = peliculas.find((p) => p.codigo === f.peliculaCodigo);
                   const sala = salas.find((s) => s.id === f.salaId);
                   const disponibles = f.asientos.filter((a) => a.estado === "Disponible").length;
+                  const totalAsientos = f.asientos.length;
+                  const porcentaje = totalAsientos === 0 ? 0 : Math.round((disponibles / totalAsientos) * 100);
 
                   return (
                     <tr key={f.id}>
@@ -174,7 +189,14 @@ export default function FormularioFuncion() {
                       <td>{sala?.nombre ?? "Sala eliminada"}</td>
                       <td>{f.horario.replace("T", " ")}</td>
                       <td>
-                        {disponibles} / {f.asientos.length} disponibles
+                        <div className="disponibilidad" style={{ marginBottom: 0, minWidth: "140px" }}>
+                          <div className="disponibilidad-barra">
+                            <div className="disponibilidad-relleno" style={{ width: `${porcentaje}%` }} />
+                          </div>
+                          <span className="disponibilidad-texto">
+                            {disponibles} / {totalAsientos}
+                          </span>
+                        </div>
                       </td>
                       <td>
                         <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(f.id)}>
@@ -190,5 +212,6 @@ export default function FormularioFuncion() {
         </>
       )}
     </div>
+    </>
   );
 }

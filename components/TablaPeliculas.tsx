@@ -93,8 +93,11 @@ export default function TablaPelicula() {
 
   return (
     <div className="card">
-      <div className="flex" style={{ justifyContent: "space-between", alignItems: "center" }}>
-        <h2>Peliculas</h2>
+      <div className="section-header">
+        <div>
+          <h2>Peliculas</h2>
+          <p>Gestiona el catalogo: agrega titulos nuevos, actualiza precios y controla su disponibilidad.</p>
+        </div>
         <button className="btn btn-primary" onClick={handleNuevaPelicula}>
           + Nueva Pelicula
         </button>

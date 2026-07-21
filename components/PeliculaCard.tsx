@@ -43,7 +43,7 @@ export default function PeliculaCard({ pelicula, onEditar }: PeliculaCardProps) 
       <div className="pelicula-card-datos">
         <div className="pelicula-card-dato">
           <span className="label">Genero</span>
-          {pelicula.genero}
+          <span className="badge badge-neutral">{pelicula.genero}</span>
         </div>
         <div className="pelicula-card-dato">
           <span className="label">Duracion</span>
@@ -51,11 +51,11 @@ export default function PeliculaCard({ pelicula, onEditar }: PeliculaCardProps) 
         </div>
         <div className="pelicula-card-dato">
           <span className="label">Clasificacion</span>
-          {pelicula.clasificacion}
+          <span className="badge badge-accent">{pelicula.clasificacion}</span>
         </div>
         <div className="pelicula-card-dato">
           <span className="label">Sala</span>
-          {pelicula.salaId}
+          <span className="badge badge-neutral">{pelicula.salaId}</span>
         </div>
         <div className="pelicula-card-dato">
           <span className="label">Precio</span>${pelicula.precio.toFixed(2)}

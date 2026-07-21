@@ -14,6 +14,19 @@ interface SalaCardProps {
 export default function SalaCard({ sala, onEditar, onEliminar }: SalaCardProps) {
   return (
     <div className="sala-card">
+      <div className="sala-decor" aria-hidden="true">
+        <div className="sala-decor-screen" />
+        <div className="sala-decor-rows">
+          {[0, 1, 2].map((fila) => (
+            <div className="sala-decor-row" key={fila}>
+              {Array.from({ length: 10 }).map((_, columna) => (
+                <span className="sala-decor-seat" key={columna} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="sala-card-header">
         <div>
           <p className="sala-card-titulo">{sala.nombre}</p>
