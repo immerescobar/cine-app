@@ -171,12 +171,14 @@ store
 
 ## ✔️ Validaciones implementadas
 
-- No se permiten codigos de pelicula duplicados
-- No se permite crear peliculas sin nombre
-- No se permiten precios negativos
-- No se pueden reservar asientos ya ocupados (bloqueado visualmente en el mapa de asientos)
-- No se permiten funciones con horario repetido en la misma sala
-- No se puede eliminar una sala que esta en uso por alguna pelicula o funcion
+- No se permiten códigos de película duplicados.
+- No se permite crear películas sin nombre.
+- No se permiten precios negativos.
+- No se pueden reservar asientos ya ocupados.
+- No se permiten funciones con horario repetido en la misma sala.
+- No se puede eliminar una sala que está en uso por alguna película o función.
+- No se puede eliminar una película asociada a una función programada.
+- Las validaciones críticas de código duplicado, horario repetido y reserva de asientos están reforzadas también a nivel de Redux.
 
 - ## 🎨 Mejoras visuales recientes
 
