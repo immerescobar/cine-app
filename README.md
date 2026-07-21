@@ -12,6 +12,8 @@ Sistema de gestión y venta de entradas para cine, desarrollado como Desafío Pr
 - [Modulos funcionales](#-modulos-funcionales)
 - [Arquitectura de Redux](#-arquitectura-de-redux)
 - [Validaciones implementadas](#-validaciones-implementadas)
+- [Diseño responsivo](#-diseño-responsivo)
+- [Mejoras visuales recientes](#-mejoras-visuales-recientes)
 - [Limitaciones conocidas](#-limitaciones-conocidas)
 - [Autores](#-autores)
 
@@ -176,6 +178,33 @@ store
 - No se permiten funciones con horario repetido en la misma sala
 - No se puede eliminar una sala que esta en uso por alguna pelicula o funcion
 
+- ## 🎨 Mejoras visuales recientes
+
+Se realizó un rediseño general de la interfaz para mejorar la presentación, la navegación y la experiencia de usuario, sin modificar la lógica principal ni la arquitectura de Redux.
+
+### Cambios principales
+
+- Header fijo con navegación activa resaltada.
+- Logo y estilo visual unificado para toda la aplicación.
+- Dashboard con mensaje de bienvenida, iconos, tarjetas de estadísticas y accesos rápidos.
+- Encabezados descriptivos para cada módulo.
+- Formularios reorganizados mediante grids responsivos.
+- Películas mostradas con badges para género, clasificación, sala y estado.
+- Tarjetas de salas con representación visual de la pantalla y los asientos.
+- Funciones mostradas con barra gráfica de disponibilidad.
+- Flujo de reserva dividido visualmente en pasos.
+- Leyenda y estados de los asientos con estilos consistentes:
+  - Disponible
+  - Seleccionado
+  - Ocupado
+- Transiciones en botones, tarjetas, campos de entrada y elementos interactivos.
+- Mejoras de visualización en dispositivos móviles, tabletas y computadoras.
+
+Estas modificaciones fueron verificadas mediante:
+
+npm run build
+npm run lint
+
 ## ⚠️ Limitaciones conocidas
 
 - El estado se pierde al refrescar la pagina (no hay persistencia ni backend, segun lo requerido por el desafio)
@@ -185,4 +214,4 @@ store
 ## 👥 Autores
 
 - Immer Escobar ([@immerescobar](https://github.com/immerescobar))
-- Melquicedet España Hernandez [([@melquisspana](https://github.com/melquisspana))
+- Melquicedet España Hernández ([@melquisspana](https://github.com/melquisspana))
