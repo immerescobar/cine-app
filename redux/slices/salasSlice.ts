@@ -109,6 +109,14 @@ const salasSlice = createSlice({
       const sala = state.salas.find((s) => s.id === action.payload.salaId);
       if (!sala) return;
 
+      // Guarda de reducer (defensa en profundidad): el formulario ya valida
+      // que no se repita horario+sala, pero si la accion se despacha
+      // directamente el estado no debe corromperse con horarios duplicados.
+      const horarioRepetido = state.funciones.some(
+        (f) => f.salaId === action.payload.salaId && f.horario === action.payload.horario
+      );
+      if (horarioRepetido) return;
+
       const nuevaFuncion: Funcion = {
         id: `F${Date.now()}`,
         peliculaCodigo: action.payload.peliculaCodigo,

@@ -1,8 +1,9 @@
 "use client";
 
 import type { Pelicula } from "@/types/peliculas";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { eliminarPelicula } from "@/redux/slices/peliculaSlice";
+import { selectFunciones } from "@/redux/slices/salasSlice";
 
 interface PeliculaFilaProps {
   pelicula: Pelicula;
@@ -11,8 +12,20 @@ interface PeliculaFilaProps {
 
 export default function PeliculaFila({ pelicula, onEditar }: PeliculaFilaProps) {
   const dispatch = useAppDispatch();
+  const funciones = useAppSelector(selectFunciones);
 
   function handleEliminar() {
+    // Evitamos eliminar una pelicula que todavia esta en uso por una funcion
+    // programada, para no dejar funciones "huerfanas" apuntando a una
+    // pelicula inexistente (mismo criterio que TablaSalas.tsx).
+    const enUsoPorFuncion = funciones.some((f) => f.peliculaCodigo === pelicula.codigo);
+    if (enUsoPorFuncion) {
+      alert(
+        `No se puede eliminar "${pelicula.nombre}" porque esta en uso por al menos una funcion programada.`
+      );
+      return;
+    }
+
     const confirmar = window.confirm(
       `¿Seguro que deseas eliminar "${pelicula.nombre}"?`
     );

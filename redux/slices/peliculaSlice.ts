@@ -36,6 +36,14 @@ const peliculaSlice = createSlice({
   initialState,
   reducers: {
     agregarPelicula: (state, action: PayloadAction<Pelicula>) => {
+      // Guarda de reducer (defensa en profundidad): el formulario ya valida
+      // codigo duplicado, pero si la accion se despacha directamente sin
+      // pasar por el formulario, el estado no debe corromperse.
+      const yaExiste = state.peliculas.some(
+        (p) => p.codigo.toLowerCase() === action.payload.codigo.toLowerCase()
+      );
+      if (yaExiste) return;
+
       state.peliculas.push(action.payload);
     },
     eliminarPelicula: (state, action: PayloadAction<string>) => {
